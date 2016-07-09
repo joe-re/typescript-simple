@@ -166,13 +166,19 @@ namespace tss {
             }
             // for Windows #37
             outputFileName = this.normalizeSlashes(outputFileName);
-            let file = output.outputFiles.filter((file) => file.name === outputFileName)[0];
+            let file = output.outputFiles.filter((file) => {
+              const name = path.isAbsolute(file.name) ? path.relative(process.cwd(), file.name) : file.name;
+              return name === outputFileName
+            })[0];
             let text = file.text;
 
             // If we have sourceMaps convert them to inline sourceMaps
             if (this.options.sourceMap) {
                 let sourceMapFileName = outputFileName + '.map';
-                let sourceMapFile = output.outputFiles.filter((file) => file.name === sourceMapFileName)[0];
+                let sourceMapFile = output.outputFiles.filter((file) => {
+                  const name = path.isAbsolute(file.name) ? path.relative(process.cwd(), file.name) : file.name;
+                  return name === sourceMapFileName
+                })[0];
 
                 // Transform sourcemap
                 let sourceMapText = sourceMapFile.text;
