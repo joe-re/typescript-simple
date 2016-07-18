@@ -138,6 +138,7 @@ var tss;
             return JSON.stringify(sourceMap);
         };
         TypeScriptSimple.prototype.toJavaScript = function (service, fileName) {
+            var _this = this;
             var output = service.getEmitOutput(fileName);
             var allDiagnostics = service.getCompilerOptionsDiagnostics()
                 .concat(service.getSyntacticDiagnostics(fileName));
@@ -159,7 +160,8 @@ var tss;
             // for Windows #37
             outputFileName = this.normalizeSlashes(outputFileName);
             var file = output.outputFiles.filter(function (file) {
-                var name = path.isAbsolute(file.name) ? path.relative(process.cwd(), file.name) : file.name;
+                var rootDir = 'rootDir' in _this.options ? _this.options.rootDir : process.cwd();
+                var name = path.isAbsolute(file.name) ? path.relative(rootDir, file.name) : file.name;
                 return name === outputFileName;
             })[0];
             var text = file.text;
@@ -167,7 +169,8 @@ var tss;
             if (this.options.sourceMap) {
                 var sourceMapFileName_1 = outputFileName + '.map';
                 var sourceMapFile = output.outputFiles.filter(function (file) {
-                    var name = path.isAbsolute(file.name) ? path.relative(process.cwd(), file.name) : file.name;
+                    var rootDir = 'rootDir' in _this.options ? _this.options.rootDir : process.cwd();
+                    var name = path.isAbsolute(file.name) ? path.relative(rootDir, file.name) : file.name;
                     return name === sourceMapFileName_1;
                 })[0];
                 // Transform sourcemap

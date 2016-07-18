@@ -167,7 +167,8 @@ namespace tss {
             // for Windows #37
             outputFileName = this.normalizeSlashes(outputFileName);
             let file = output.outputFiles.filter((file) => {
-              const name = path.isAbsolute(file.name) ? path.relative(process.cwd(), file.name) : file.name;
+              const rootDir = 'rootDir' in this.options ? this.options.rootDir : process.cwd();
+              const name = path.isAbsolute(file.name) ? path.relative(rootDir, file.name) : file.name;
               return name === outputFileName
             })[0];
             let text = file.text;
@@ -176,7 +177,8 @@ namespace tss {
             if (this.options.sourceMap) {
                 let sourceMapFileName = outputFileName + '.map';
                 let sourceMapFile = output.outputFiles.filter((file) => {
-                  const name = path.isAbsolute(file.name) ? path.relative(process.cwd(), file.name) : file.name;
+                  const rootDir = 'rootDir' in this.options ? this.options.rootDir : process.cwd();
+                  const name = path.isAbsolute(file.name) ? path.relative(rootDir, file.name) : file.name;
                   return name === sourceMapFileName
                 })[0];
 
